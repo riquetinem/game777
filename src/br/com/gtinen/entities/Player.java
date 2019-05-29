@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 
 import br.com.gtinen.main.Game;
 import br.com.gtinen.world.Camera;
+import br.com.gtinen.world.World;
 
 public class Player extends Entity{
 	private boolean moved = false;
@@ -64,8 +65,8 @@ public class Player extends Entity{
 			}
 		}
 		
-		Camera.x = this.getX() - (Game.WIDTH / 2);
-		Camera.y = this.getY() - (Game.HEIGHT / 2);
+		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH / 2), 0, World.WIDTH * 16- Game.WIDTH);
+		Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT / 2), 0, World.HEIGHT * 16 - Game.HEIGHT);
 	}
 	
 	public void render(Graphics g) {
