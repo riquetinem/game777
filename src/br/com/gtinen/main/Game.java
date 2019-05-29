@@ -4,27 +4,51 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 
-public class Game extends Canvas implements Runnable{
+import br.com.gtinen.entities.Entity;
+import br.com.gtinen.entities.Player;
+import br.com.gtinen.graficos.Spritesheet;
+import br.com.gtinen.world.World;
+
+public class Game extends Canvas implements Runnable,KeyListener{
 	
 	private static final long serialVersionUID = 1L;
 	public static JFrame frame;
 	private Thread thread;
 	private boolean isRunning = true;
-	private final int WIDTH = 240;
-	private final int HEIGHT = 160;
-	private final int SCALE = 4;
+	public final static int WIDTH = 240;
+	public final static int HEIGHT = 160;
+	private final int SCALE = 3;
 	
 	private BufferedImage image;
 	
+	public static List<Entity> entities;
+	public static Spritesheet spritesheet;
+	
+	public static World world;
+	
+	public static Player player;
+		
 	public Game() {
+		addKeyListener(this);
 		this.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 		initFrame();
+		//Inicializando objetos		
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		entities = new ArrayList<Entity>();	
+		spritesheet = new Spritesheet("/spritesheet.png");
+		player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
+		entities.add(player);
+		world = new World("/map.png");
+		
 	}
 	
 	public void initFrame() {
@@ -58,7 +82,13 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	public void tick() {
-		
+		for(int i = 0; i < entities.size(); i++) {
+			Entity e = entities.get(i);
+			if(e instanceof Player) {
+				// é um jogador
+				e.tick();
+			}			
+		}
 	}
 	
 	public void render() {
@@ -71,10 +101,18 @@ public class Game extends Canvas implements Runnable{
 		}
 		
 		Graphics g = image.getGraphics();
-		g.setColor(new Color(19, 19 , 19));
+		g.setColor(new Color(0, 0, 0));
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
 		// Graphics2D g2 = (Graphics2D) g;
+		// Render map
+		world.render(g);
+		
+		// Render entidades
+		for(int i = 0; i < entities.size(); i++) {
+			Entity e = entities.get(i);
+			e.render(g);
+		}
 		
 		g.dispose();
 		g = bs.getDrawGraphics();
@@ -113,5 +151,48 @@ public class Game extends Canvas implements Runnable{
 		}
 		
 		stop();
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
+			// BOTAO DIREITO
+			player.right = true;
+		}else if(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
+			// BOTAO ESQUERDO
+			player.left = true;
+		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
+			// BOTAO DE CIMA
+			player.up = true;
+		}else if(e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
+			// BOTAO DE BAIXO
+			player.down = true;
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
+			// BOTAO DIREITO
+			player.right = false;
+		}else if(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
+			// BOTAO ESQUERDO
+			player.left = false;
+		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
+			// BOTAO DE CIMA
+			player.up = false;
+		}else if(e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
+			// BOTAO DE BAIXO
+			player.down = false;
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		
 	}
 }
