@@ -14,11 +14,7 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
-import br.com.tinem.entities.Bullet;
-import br.com.tinem.entities.Enemy;
-import br.com.tinem.entities.Entity;
-import br.com.tinem.entities.LifePack;
-import br.com.tinem.entities.Player;
+import br.com.tinem.entities.*;
 import br.com.tinem.graphics.Spritesheet;
 import br.com.tinem.graphics.UI;
 import br.com.tinem.world.World;
@@ -39,6 +35,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
     public static List<Enemy> enemies;
     public static List<LifePack> lifePack;
     public static List<Bullet> bullet;
+    public static List<BulletShoot> bulletShoots;
 
     public static Spritesheet spritesheet;
 
@@ -61,6 +58,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
         enemies = new ArrayList<Enemy>();
         lifePack = new ArrayList<LifePack>();
         bullet = new ArrayList<Bullet>();
+        bulletShoots = new ArrayList<BulletShoot>();
 
         spritesheet = new Spritesheet("/spritesheet.png");
         player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
@@ -110,6 +108,10 @@ public class Main extends Canvas implements Runnable, KeyListener {
                 e.tick();
             }
         }
+
+        for(int i = 0 ; i < bulletShoots.size(); i++){
+            bulletShoots.get(i).tick();
+        }
     }
 
     public void render() {
@@ -132,6 +134,10 @@ public class Main extends Canvas implements Runnable, KeyListener {
         for (int i = 0; i < entities.size(); i++) {
             Entity e = entities.get(i);
             e.render(g);
+        }
+
+        for(int i = 0 ; i < bulletShoots.size(); i++){
+            bulletShoots.get(i).render(g);
         }
 
         ui.render(g);
@@ -193,6 +199,10 @@ public class Main extends Canvas implements Runnable, KeyListener {
         } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
             // BOTAO DE BAIXO
             player.down = true;
+        }
+
+        if(e.getKeyCode() == KeyEvent.VK_Z){
+            player.shoot = true;
         }
     }
 

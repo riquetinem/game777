@@ -21,6 +21,8 @@ public class Player extends Entity {
     public boolean isDamaged = false;
     private int framesDamage = 0;
 
+    public boolean shoot = false;
+
     private int frames = 0, maxFrames = 10, index = 0, maxIndex = 3;
     private BufferedImage[] rightPlayer;
     private BufferedImage[] leftPlayer;
@@ -88,6 +90,34 @@ public class Player extends Entity {
                 this.framesDamage = 0;
                 isDamaged = false;
             }
+        }
+
+        if(shoot && hasGun){
+            shoot = false;
+            int dx = 0;
+            int px = 0;
+            int py = 6;
+            if(dir == right_dir){
+                // TA OLHANDO PARA A DIREITA
+                px = 18;
+                dx = 1;
+            } else {
+                // TA OLHANDO PARA A ESQUERDA
+                px = -8;
+                dx = -1;
+            }
+
+            if(ammo <= 0){
+                System.out.println("SEM MUNICAO");
+            }else {
+
+                BulletShoot tiro = new BulletShoot(this.getX() + px, this.getY() + py, 3, 3, null, dx, 0);
+                Main.bulletShoots.add(tiro);
+
+                ammo--;
+
+            }
+
         }
 
         Camera.x = Camera.clamp(this.getX() - (Main.WIDTH / 2), 0, World.WIDTH * World.TILE_SIZE - Main.WIDTH);
