@@ -16,7 +16,7 @@ public class Player extends Entity {
     private double speed = 1.5;
 
     private boolean hasGun = false;
-    public static int ammo = 0;
+    public int ammo = 0;
 
     public boolean isDamaged = false;
     private int framesDamage = 0;

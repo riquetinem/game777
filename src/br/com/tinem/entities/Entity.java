@@ -13,6 +13,7 @@ public class Entity {
     public static BufferedImage WEAPON = Main.spritesheet.getSprite(7 * 16, 0, 16, 16);
     public static BufferedImage BULLET = Main.spritesheet.getSprite(6 * 16, 16, 16, 16);
     public static BufferedImage ENEMY = Main.spritesheet.getSprite(7 * 16, 16, 16, 16);
+    public static BufferedImage ENEMY_FEEDBACK = Main.spritesheet.getSprite(9 * 16, 16, 16, 16);
     public static BufferedImage GUN_RIGHT = Main.spritesheet.getSprite(8 * 16, 0, 16, 16);
     public static BufferedImage GUN_LEFT = Main.spritesheet.getSprite(9 * 16, 0, 16, 16);
 

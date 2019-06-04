@@ -21,6 +21,6 @@ public class UI {
         // MUNIÇÃO
         g.setColor(Color.BLUE);
         g.setFont(new Font("arial", Font.BOLD, 8));
-        g.drawString("Munição: " + Player.ammo, Main.WIDTH - 60, Main.HEIGHT - 10);
+        g.drawString("Munição: " + Main.player.ammo, Main.WIDTH - 60, Main.HEIGHT - 10);
     }
 }

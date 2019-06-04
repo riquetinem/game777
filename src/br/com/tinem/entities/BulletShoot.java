@@ -12,6 +12,8 @@ public class BulletShoot extends Entity{
     private int dy;
     private double speed = 4;
 
+    public int damage = 5, criticDamage = 10;
+
     private int life = 20, curLife = 0;
 
     public BulletShoot(int x, int y, int width, int height, BufferedImage sprite, int dx, int dy) {
@@ -20,7 +22,6 @@ public class BulletShoot extends Entity{
         this.dx = dx;
         this.dy = dy;
     }
-
 
     public void tick(){
         x+=dx * speed;

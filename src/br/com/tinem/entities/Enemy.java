@@ -19,6 +19,11 @@ public class Enemy extends Entity {
 
     private BufferedImage[] sprites;
 
+    private int life = 10;
+
+    private boolean isDamaged = false;
+    private int damageFrames = 10, getDamageCurrent = 0;
+
     public Enemy(int x, int y, int width, int height, BufferedImage sprite) {
         super(x, y, width, height, null);
         sprites = new BufferedImage[2];
@@ -77,10 +82,34 @@ public class Enemy extends Entity {
                 Main.world = new World("/map.png");
             }
         }
+
+        collingBullet();
+
+        if (life <= 0) {
+            destroySelf();
+            return;
+        }
+
+        if(isDamaged){
+            this.getDamageCurrent++;
+            if(this.getDamageCurrent == this.damageFrames){
+                this.getDamageCurrent = 0;
+                this.isDamaged = false;
+            }
+        }
+
+    }
+
+    private void destroySelf() {
+        Main.entities.remove(this);
     }
 
     public void render(Graphics g) {
-        g.drawImage(sprites[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+        if(!isDamaged){
+            g.drawImage(sprites[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+        }else{
+            g.drawImage(Enemy.ENEMY_FEEDBACK, this.getX() - Camera.x, this.getY() - Camera.y, null);
+        }
     }
 
     public boolean isCollidingWithPlayer() {
@@ -105,5 +134,25 @@ public class Enemy extends Entity {
         }
 
         return false;
+    }
+
+    private void collingBullet() {
+        for (int i = 0; i < Main.bulletShoots.size(); i++) {
+                Entity e = Main.bulletShoots.get(i);
+            if (e instanceof BulletShoot) {
+                if (Entity.isColling(this, e)) {
+                    // matar o inimigo caso ele tome o tiro
+                    isDamaged = true;
+                    // FAZ UM DANO CRITICO DE 2%
+                    if(Main.rand.nextInt(100) < 2){
+                        life = life - ((BulletShoot) e).criticDamage;
+                    }else {
+                        life = life - ((BulletShoot) e).damage;
+                    }
+                    Main.bulletShoots.remove(i);
+                    return;
+                }
+            }
+        }
     }
 }
