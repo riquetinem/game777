@@ -65,22 +65,6 @@ public class Enemy extends Entity {
             } else if (Main.rand.nextInt(100) < 2) {
                 Main.player.life = Main.player.life - danoCritico;
             }
-
-            if (Main.player.life <= 0) {
-                // GAME OVER
-                Main.entities.clear();
-                Main.enemies.clear();
-                Main.lifePack.clear();
-                Main.bullet.clear();
-                Main.entities = new ArrayList<Entity>();
-                Main.enemies = new ArrayList<Enemy>();
-                Main.lifePack = new ArrayList<LifePack>();
-                Main.bullet = new ArrayList<Bullet>();
-                Main.spritesheet = new Spritesheet("/spritesheet.png");
-                Main.player = new Player(0, 0, 16, 16, Main.spritesheet.getSprite(32, 0, 16, 16));
-                Main.entities.add(Main.player);
-                Main.world = new World("/map.png");
-            }
         }
 
         collingBullet();
@@ -102,6 +86,7 @@ public class Enemy extends Entity {
 
     private void destroySelf() {
         Main.entities.remove(this);
+        Main.enemies.remove(this);
     }
 
     public void render(Graphics g) {

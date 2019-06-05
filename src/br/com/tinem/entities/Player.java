@@ -120,6 +120,12 @@ public class Player extends Entity {
 
         }
 
+        if (life <= 0) {
+            // GAME OVER
+            this.life = 0;
+            Main.gameState = "FAIL";
+        }
+
         Camera.x = Camera.clamp(this.getX() - (Main.WIDTH / 2), 0, World.WIDTH * World.TILE_SIZE - Main.WIDTH);
         Camera.y = Camera.clamp(this.getY() - (Main.HEIGHT / 2), 0, World.HEIGHT * World.TILE_SIZE - Main.HEIGHT);
     }

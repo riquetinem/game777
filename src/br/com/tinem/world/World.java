@@ -3,10 +3,12 @@ package br.com.tinem.world;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
 import br.com.tinem.entities.*;
+import br.com.tinem.graphics.Spritesheet;
 import br.com.tinem.main.Main;
 
 public class World {
@@ -87,6 +89,21 @@ public class World {
                 || (tiles[x2 + (y2 * World.WIDTH)] instanceof WallTile)
                 || (tiles[x3 + (y3 * World.WIDTH)] instanceof WallTile)
                 || (tiles[x4 + (y4 * World.WIDTH)] instanceof WallTile));
+    }
+
+    public static void restartGame(String level){
+        Main.entities.clear();
+        Main.enemies.clear();
+        Main.lifePack.clear();
+        Main.bullet.clear();
+        Main.entities = new ArrayList<Entity>();
+        Main.enemies = new ArrayList<Enemy>();
+        Main.lifePack = new ArrayList<LifePack>();
+        Main.bullet = new ArrayList<Bullet>();
+        Main.spritesheet = new Spritesheet("/spritesheet.png");
+        Main.player = new Player(0, 0, 16, 16, Main.spritesheet.getSprite(32, 0, 16, 16));
+        Main.entities.add(Main.player);
+        Main.world = new World("/" + level);
     }
 
     public void render(Graphics g) {

@@ -1,9 +1,6 @@
 package br.com.tinem.main;
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
@@ -29,6 +26,8 @@ public class Main extends Canvas implements Runnable, KeyListener {
     public final static int HEIGHT = 160;
     private final int SCALE = 3;
 
+    private int CUR_LEVEL = 1;
+
     private BufferedImage image;
 
     public static List<Entity> entities;
@@ -44,6 +43,11 @@ public class Main extends Canvas implements Runnable, KeyListener {
     public static UI ui;
 
     public static Random rand;
+
+    public static String gameState = "NORMAL";
+    private boolean showMessageGameOver = true;
+    private int framesGameOver = 0;
+    private boolean restartGame = false;
 
     public Main() {
         rand = new Random();
@@ -63,7 +67,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
         spritesheet = new Spritesheet("/spritesheet.png");
         player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
         entities.add(player);
-        world = new World("/map.png");
+        world = new World("/level1.png");
 
     }
 
@@ -98,19 +102,52 @@ public class Main extends Canvas implements Runnable, KeyListener {
     }
 
     public void tick() {
-        for (int i = 0; i < entities.size(); i++) {
-            Entity e = entities.get(i);
-            if (e instanceof Player) {
-                // é um jogador
-                e.tick();
-            } else if (e instanceof Enemy) {
-                // é um inimigo
-                e.tick();
+        if (gameState.equals("NORMAL")) {
+            this.restartGame = false;
+            for (int i = 0; i < entities.size(); i++) {
+                Entity e = entities.get(i);
+                if (e instanceof Player) {
+                    // é um jogador
+                    e.tick();
+                } else if (e instanceof Enemy) {
+                    // é um inimigo
+                    e.tick();
+                }
             }
-        }
 
-        for(int i = 0 ; i < bulletShoots.size(); i++){
-            bulletShoots.get(i).tick();
+            for (int i = 0; i < bulletShoots.size(); i++) {
+                bulletShoots.get(i).tick();
+            }
+
+            if (enemies.size() == 0) {
+                // AVANÇAR PROXIMA FASE
+
+                CUR_LEVEL++;
+                int MAX_LEVEL = 2;
+                if (CUR_LEVEL > MAX_LEVEL) {
+                    CUR_LEVEL = 1;
+                }
+
+                String newWorld = "level" + CUR_LEVEL + ".png";
+                World.restartGame(newWorld);
+            }
+        } else if (gameState.equals("FAIL")) {
+            this.framesGameOver++;
+            if (this.framesGameOver == 30) {
+                this.framesGameOver = 0;
+                if (this.showMessageGameOver) {
+                    this.showMessageGameOver = false;
+                } else {
+                    this.showMessageGameOver = true;
+                }
+            }
+            if (restartGame){
+                this.restartGame = false;
+                this.gameState = "NORMAL";
+                CUR_LEVEL = 1;
+                String newWorld = "level" + CUR_LEVEL + ".png";
+                World.restartGame(newWorld);
+            }
         }
     }
 
@@ -136,7 +173,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
             e.render(g);
         }
 
-        for(int i = 0 ; i < bulletShoots.size(); i++){
+        for (int i = 0; i < bulletShoots.size(); i++) {
             bulletShoots.get(i).render(g);
         }
 
@@ -145,6 +182,20 @@ public class Main extends Canvas implements Runnable, KeyListener {
         g.dispose();
         g = bs.getDrawGraphics();
         g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
+
+        if (gameState.equals("FAIL")) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setColor(new Color(0, 0, 0, 100));
+            g2.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
+            g.setFont(new Font("arial", Font.BOLD, 36));
+            g.setColor(Color.WHITE);
+            g.drawString("GAME OVER", (WIDTH * SCALE) / 2 - 100, (HEIGHT * SCALE) / 2);
+            g.setFont(new Font("arial", Font.BOLD, 20));
+            if (showMessageGameOver) {
+                g.drawString("Press START to restart", (WIDTH * SCALE) / 2 - 100, (HEIGHT * SCALE) / 2 + 40);
+            }
+
+        }
 
         bs.show();
     }
@@ -174,7 +225,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
             }
 
             if (System.currentTimeMillis() - timer >= 1000) {
-                System.out.println("FPS: " + frames);
+                // System.out.println("FPS: " + frames);
                 frames = 0;
                 timer += 1000;
             }
@@ -201,26 +252,30 @@ public class Main extends Canvas implements Runnable, KeyListener {
             player.down = true;
         }
 
-        if(e.getKeyCode() == KeyEvent.VK_Z){
+        if (e.getKeyCode() == KeyEvent.VK_Z) {
             player.shoot = true;
+        }
+
+        if(e.getKeyCode() == KeyEvent.VK_ENTER){
+            this.restartGame = true;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
-            // BOTAO DIREITO
+            // DIREITA
             player.right = false;
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
-            // BOTAO ESQUERDO
+            // ESQUERDA
             player.left = false;
         }
 
         if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
-            // BOTAO DE CIMA
+            // CIMA
             player.up = false;
         } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
-            // BOTAO DE BAIXO
+            // BAIXO
             player.down = false;
         }
     }
