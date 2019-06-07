@@ -84,20 +84,20 @@ public class Player extends Entity {
         this.checkCollisionBullet();
         this.checkCollisionWeapon();
 
-        if(isDamaged){
+        if (isDamaged) {
             this.framesDamage++;
-            if(this.framesDamage == 8){
+            if (this.framesDamage == 8) {
                 this.framesDamage = 0;
                 isDamaged = false;
             }
         }
 
-        if(shoot && hasGun){
+        if (shoot && hasGun) {
             shoot = false;
             int dx = 0;
             int px = 0;
             int py = 6;
-            if(dir == right_dir){
+            if (dir == right_dir) {
                 // TA OLHANDO PARA A DIREITA
                 px = 18;
                 dx = 1;
@@ -107,9 +107,9 @@ public class Player extends Entity {
                 dx = -1;
             }
 
-            if(ammo <= 0){
+            if (ammo <= 0) {
                 System.out.println("SEM MUNICAO");
-            }else {
+            } else {
 
                 BulletShoot tiro = new BulletShoot(this.getX() + px, this.getY() + py, 3, 3, null, dx, 0);
                 Main.bulletShoots.add(tiro);
@@ -144,11 +144,11 @@ public class Player extends Entity {
     }
 
     private void checkCollisionWeapon() {
-        for(int i = 0; i < Main.entities.size(); i++){
+        for (int i = 0; i < Main.entities.size(); i++) {
             Entity arma = Main.entities.get(i);
 
-            if (arma instanceof Weapon){
-                if(Entity.isColling(this, arma)){
+            if (arma instanceof Weapon) {
+                if (Entity.isColling(this, arma)) {
                     hasGun = true;
                     Main.entities.remove(arma);
                 }
@@ -177,21 +177,21 @@ public class Player extends Entity {
     }
 
     public void render(Graphics g) {
-        if(!isDamaged){
+        if (!isDamaged) {
             if (dir == right_dir) {
                 g.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-                if(hasGun){
+                if (hasGun) {
                     // arma para direita
                     g.drawImage(Entity.GUN_RIGHT, this.getX() - Camera.x + 12, this.getY() - Camera.y, null);
                 }
             } else if (dir == left_dir) {
                 g.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-                if(hasGun){
+                if (hasGun) {
                     //  arma para esquerda
                     g.drawImage(Entity.GUN_LEFT, this.getX() - Camera.x - 11, this.getY() - Camera.y, null);
                 }
             }
-        }else{
+        } else {
             g.drawImage(playerDamage, this.getX() - Camera.x, this.getY() - Camera.y, null);
         }
 

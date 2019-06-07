@@ -74,9 +74,9 @@ public class Enemy extends Entity {
             return;
         }
 
-        if(isDamaged){
+        if (isDamaged) {
             this.getDamageCurrent++;
-            if(this.getDamageCurrent == this.damageFrames){
+            if (this.getDamageCurrent == this.damageFrames) {
                 this.getDamageCurrent = 0;
                 this.isDamaged = false;
             }
@@ -90,9 +90,9 @@ public class Enemy extends Entity {
     }
 
     public void render(Graphics g) {
-        if(!isDamaged){
+        if (!isDamaged) {
             g.drawImage(sprites[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-        }else{
+        } else {
             g.drawImage(Enemy.ENEMY_FEEDBACK, this.getX() - Camera.x, this.getY() - Camera.y, null);
         }
     }
@@ -123,15 +123,15 @@ public class Enemy extends Entity {
 
     private void collingBullet() {
         for (int i = 0; i < Main.bulletShoots.size(); i++) {
-                Entity e = Main.bulletShoots.get(i);
+            Entity e = Main.bulletShoots.get(i);
             if (e instanceof BulletShoot) {
                 if (Entity.isColling(this, e)) {
                     // matar o inimigo caso ele tome o tiro
                     isDamaged = true;
                     // FAZ UM DANO CRITICO DE 2%
-                    if(Main.rand.nextInt(100) < 2){
+                    if (Main.rand.nextInt(100) < 2) {
                         life = life - ((BulletShoot) e).criticDamage;
-                    }else {
+                    } else {
                         life = life - ((BulletShoot) e).damage;
                     }
                     Main.bulletShoots.remove(i);

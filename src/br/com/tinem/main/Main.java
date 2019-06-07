@@ -24,7 +24,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
     private boolean isRunning = true;
     public final static int WIDTH = 240;
     public final static int HEIGHT = 160;
-    private final int SCALE = 3;
+    public final static int SCALE = 3;
 
     private int CUR_LEVEL = 1;
 
@@ -44,10 +44,14 @@ public class Main extends Canvas implements Runnable, KeyListener {
 
     public static Random rand;
 
-    public static String gameState = "NORMAL";
+    public static String gameState = "MENU";
     private boolean showMessageGameOver = true;
     private int framesGameOver = 0;
     private boolean restartGame = false;
+
+    public static boolean fecharJogo = false;
+
+    public Menu menu;
 
     public Main() {
         rand = new Random();
@@ -64,10 +68,13 @@ public class Main extends Canvas implements Runnable, KeyListener {
         bullet = new ArrayList<Bullet>();
         bulletShoots = new ArrayList<BulletShoot>();
 
+
         spritesheet = new Spritesheet("/spritesheet.png");
         player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
         entities.add(player);
         world = new World("/level1.png");
+
+        menu = new Menu();
 
     }
 
@@ -141,13 +148,19 @@ public class Main extends Canvas implements Runnable, KeyListener {
                     this.showMessageGameOver = true;
                 }
             }
-            if (restartGame){
+            if (restartGame) {
                 this.restartGame = false;
                 this.gameState = "NORMAL";
                 CUR_LEVEL = 1;
                 String newWorld = "level" + CUR_LEVEL + ".png";
                 World.restartGame(newWorld);
             }
+        } else if (gameState.equals("MENU")) {
+            menu.tick();
+        }
+
+        if (fecharJogo) {
+            System.exit(1);
         }
     }
 
@@ -194,7 +207,8 @@ public class Main extends Canvas implements Runnable, KeyListener {
             if (showMessageGameOver) {
                 g.drawString("Press START to restart", (WIDTH * SCALE) / 2 - 100, (HEIGHT * SCALE) / 2 + 40);
             }
-
+        } else if (gameState.equals("MENU")) {
+            menu.render(g);
         }
 
         bs.show();
@@ -247,17 +261,34 @@ public class Main extends Canvas implements Runnable, KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
             // BOTAO DE CIMA
             player.up = true;
+
+            if (gameState.equals("MENU")) {
+                menu.up = true;
+            }
         } else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
             // BOTAO DE BAIXO
             player.down = true;
+
+            if (gameState.equals("MENU")) {
+                menu.down = true;
+            }
         }
 
         if (e.getKeyCode() == KeyEvent.VK_Z) {
             player.shoot = true;
         }
 
-        if(e.getKeyCode() == KeyEvent.VK_ENTER){
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             this.restartGame = true;
+
+            if (gameState.equals("MENU")) {
+                menu.enter = true;
+            }
+        }
+
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            Menu.menuOn = true;
+            gameState = "MENU";
         }
     }
 
