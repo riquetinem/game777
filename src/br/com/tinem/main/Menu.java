@@ -42,10 +42,10 @@ public class Menu {
 
         if (enter) {
             enter = false;
-            if (menuOrInit) {
-                Main.gameState = "NORMAL";
-            } else if (options[currentOption] == "Sair") {
+            if (options[currentOption] == "Sair") {
                 Main.fecharJogo = true;
+            } else if (menuOrInit) {
+                Main.gameState = "NORMAL";
             }
         }
     }
@@ -69,10 +69,10 @@ public class Menu {
 
         if ((options[currentOption] == "Novo jogo") || (options[currentOption] == "Continuar")) {
 
-            if(menuOn) {
+            if (menuOn) {
                 novoJogo = ">" + "Continuar";
                 options[0] = "Continuar";
-            }else{
+            } else {
                 novoJogo = ">" + options[0];
             }
 

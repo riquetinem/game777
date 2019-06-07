@@ -79,7 +79,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
     }
 
     public void initFrame() {
-        frame = new JFrame("Fuga dos pintos");
+        frame = new JFrame("M A C O N H A");
         frame.add(this);
         frame.setResizable(false);
         frame.pack();
@@ -216,6 +216,8 @@ public class Main extends Canvas implements Runnable, KeyListener {
 
     @Override
     public void run() {
+        Sound.music.loop();
+
         // pega o tempo do computador em nano segundo (mais preciso)
         long lastTime = System.nanoTime();
         // define o fps do Main

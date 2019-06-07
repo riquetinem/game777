@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import br.com.tinem.graphics.Spritesheet;
 import br.com.tinem.main.Main;
+import br.com.tinem.main.Sound;
 import br.com.tinem.world.*;
 
 public class Enemy extends Entity {
@@ -131,8 +132,10 @@ public class Enemy extends Entity {
                     // FAZ UM DANO CRITICO DE 2%
                     if (Main.rand.nextInt(100) < 2) {
                         life = life - ((BulletShoot) e).criticDamage;
+                        Sound.hurtEffect.play();
                     } else {
                         life = life - ((BulletShoot) e).damage;
+                        Sound.hurtEffect.play();
                     }
                     Main.bulletShoots.remove(i);
                     return;
