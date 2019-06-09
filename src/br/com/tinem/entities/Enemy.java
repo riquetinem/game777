@@ -130,7 +130,7 @@ public class Enemy extends Entity {
                     // matar o inimigo caso ele tome o tiro
                     isDamaged = true;
                     // FAZ UM DANO CRITICO DE 2%
-                    if (Main.rand.nextInt(100) < 2) {
+                    if (Main.rand.nextInt(100) < 100) {
                         life = life - ((BulletShoot) e).criticDamage;
                         // Sound.hurtEffect.play();
                     } else {

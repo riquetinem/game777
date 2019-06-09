@@ -56,6 +56,8 @@ public class Main extends Canvas implements Runnable, KeyListener {
 
     public static boolean fecharJogo = false;
 
+    public static boolean saveGame = false;
+
     public Menu menu;
 
     public Main() {
@@ -114,7 +116,22 @@ public class Main extends Canvas implements Runnable, KeyListener {
     }
 
     public void tick() {
+
         if (gameState.equals("NORMAL")) {
+            if(this.saveGame){
+                this.saveGame = false;
+                String[] opt1 = {
+                        "level"
+                };
+
+                int[] opt2 = {
+                        this.CUR_LEVEL
+                };
+
+                Menu.saveGame(opt1, opt2, 10);
+                System.out.println("Jogo salvo");
+            }
+
             this.restartGame = false;
             for (int i = 0; i < entities.size(); i++) {
                 Entity e = entities.get(i);
@@ -301,6 +318,10 @@ public class Main extends Canvas implements Runnable, KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             Menu.menuOn = true;
             gameState = "MENU";
+        }
+
+        if(e.getKeyCode() == KeyEvent.VK_SPACE){
+            this.saveGame = true;
         }
     }
 
