@@ -5,10 +5,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import br.com.tinem.entities.*;
@@ -19,7 +23,7 @@ import br.com.tinem.world.World;
 public class Main extends Canvas implements Runnable, KeyListener {
 
     private static final long serialVersionUID = 1L;
-    public static JFrame frame;
+    private static JFrame frame;
     private Thread thread;
     private boolean isRunning = true;
     public final static int WIDTH = 240;
@@ -37,10 +41,10 @@ public class Main extends Canvas implements Runnable, KeyListener {
     public static List<BulletShoot> bulletShoots;
 
     public static Spritesheet spritesheet;
-
     public static World world;
     public static Player player;
     public static UI ui;
+    public Menu menu;
 
     public static Random rand;
 
@@ -48,17 +52,19 @@ public class Main extends Canvas implements Runnable, KeyListener {
 
     private boolean showMessageGameOver = true;
     private int framesGameOver = 0;
-
     private boolean showMessageWin = true;
     private int framesWin = 0;
 
     private boolean restartGame = false;
-
     public static boolean fecharJogo = false;
-
     public static boolean saveGame = false;
 
-    public Menu menu;
+    public InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("pixelart.ttf");
+    public Font newFont;
+
+    public static int[] pixels;
+    public static int[] lightMapPixels;
+    public  BufferedImage lightmap;
 
     public Main() {
         rand = new Random();
@@ -68,6 +74,17 @@ public class Main extends Canvas implements Runnable, KeyListener {
         // Inicializando objetos
         ui = new UI();
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+
+        try {
+            lightmap = ImageIO.read(getClass().getResource("/lightmap.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        lightMapPixels = new int[lightmap.getWidth() * lightmap.getHeight()];
+        lightmap.getRGB(0, 0, lightmap.getWidth(), lightmap.getHeight(), lightMapPixels, 0, lightmap.getWidth());
+
+        pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 
         entities = new ArrayList<Entity>();
         enemies = new ArrayList<Enemy>();
@@ -80,6 +97,14 @@ public class Main extends Canvas implements Runnable, KeyListener {
         player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
         entities.add(player);
         world = new World("/level1.png");
+
+        try {
+            newFont = Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(16f);
+        } catch (FontFormatException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         menu = new Menu();
 
@@ -115,11 +140,22 @@ public class Main extends Canvas implements Runnable, KeyListener {
         Main.start();
     }
 
+    public static void applyLight(){
+        for (int xx = 0; xx < WIDTH; xx++){
+            for (int yy = 0; yy < HEIGHT; yy++){
+                int posicao = xx + (yy * Main.WIDTH);
+                if(lightMapPixels[posicao] == 0xffffffff){
+                    pixels[posicao] = 0;
+                }
+            }
+        }
+    }
+
     public void tick() {
 
         if (gameState.equals("NORMAL")) {
-            if(this.saveGame){
-                this.saveGame = false;
+            if (saveGame) {
+                saveGame = false;
                 String[] opt1 = {
                         "level"
                 };
@@ -216,6 +252,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
             bulletShoots.get(i).render(g);
         }
 
+        // applyLight();
         ui.render(g);
 
         g.dispose();
@@ -267,7 +304,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
             }
 
             if (System.currentTimeMillis() - timer >= 1000) {
-                // System.out.println("FPS: " + frames);
+                System.out.println("FPS: " + frames);
                 frames = 0;
                 timer += 1000;
             }
@@ -310,7 +347,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
 
             if (gameState.equals("MENU")) {
                 menu.enter = true;
-            }else if(gameState.equals("FAIL")){
+            } else if (gameState.equals("FAIL")) {
                 this.restartGame = true;
             }
         }
@@ -320,7 +357,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
             gameState = "MENU";
         }
 
-        if(e.getKeyCode() == KeyEvent.VK_SPACE){
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             this.saveGame = true;
         }
     }

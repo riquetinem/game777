@@ -33,56 +33,58 @@ public class Enemy extends Entity {
     }
 
     public void tick() {
-        if (!isCollidingWithPlayer()) {
-            if (x < Main.player.getX() && World.isFree((int) (x + speed), this.getY())
-                    && !isColliding((int) (x + speed), this.getY())) {
-                x += speed;
-            } else if (x > Main.player.getX() && World.isFree((int) (x - speed), this.getY())
-                    && !isColliding((int) (x - speed), this.getY())) {
-                x -= speed;
-            }
+        if (super.calculateDistance(this.getX(), this.getY(), Main.player.getX(), Main.player.getY()) < 100) {
+            if (!isCollidingWithPlayer()) {
+                if (x < Main.player.getX() && World.isFree((int) (x + speed), this.getY())
+                        && !isColliding((int) (x + speed), this.getY())) {
+                    x += speed;
+                } else if (x > Main.player.getX() && World.isFree((int) (x - speed), this.getY())
+                        && !isColliding((int) (x - speed), this.getY())) {
+                    x -= speed;
+                }
 
-            if (y < Main.player.getY() && World.isFree(this.getX(), (int) ((int) y + speed))
-                    && !isColliding(this.getX(), (int) y + speed)) {
-                y += speed;
-            } else if (y > Main.player.getY() && World.isFree(this.getX(), (int) ((int) y - speed))
-                    && !isColliding(this.getX(), (int) y - speed)) {
-                y -= speed;
-            }
+                if (y < Main.player.getY() && World.isFree(this.getX(), (int) ((int) y + speed))
+                        && !isColliding(this.getX(), (int) y + speed)) {
+                    y += speed;
+                } else if (y > Main.player.getY() && World.isFree(this.getX(), (int) ((int) y - speed))
+                        && !isColliding(this.getX(), (int) y - speed)) {
+                    y -= speed;
+                }
 
-            frames++;
-            if (frames == maxFrames) {
-                frames = 0;
-                index++;
-                if (index > maxIndex) {
-                    index = 0;
+                frames++;
+                if (frames == maxFrames) {
+                    frames = 0;
+                    index++;
+                    if (index > maxIndex) {
+                        index = 0;
+                    }
+                }
+            } else {
+
+                if (Main.rand.nextInt(100) < 10) {
+                    Main.player.life = Main.player.life - dano;
+                    Main.player.isDamaged = true;
+                } else if (Main.rand.nextInt(100) < 2) {
+                    Main.player.life = Main.player.life - danoCritico;
                 }
             }
-        } else {
 
-            if (Main.rand.nextInt(100) < 10) {
-                Main.player.life = Main.player.life - dano;
-                Main.player.isDamaged = true;
-            } else if (Main.rand.nextInt(100) < 2) {
-                Main.player.life = Main.player.life - danoCritico;
+            collingBullet();
+
+            if (life <= 0) {
+                destroySelf();
+                return;
             }
-        }
 
-        collingBullet();
-
-        if (life <= 0) {
-            destroySelf();
-            return;
-        }
-
-        if (isDamaged) {
-            this.getDamageCurrent++;
-            if (this.getDamageCurrent == this.damageFrames) {
-                this.getDamageCurrent = 0;
-                this.isDamaged = false;
+            if (isDamaged) {
+                this.getDamageCurrent++;
+                if (this.getDamageCurrent == this.damageFrames) {
+                    this.getDamageCurrent = 0;
+                    this.isDamaged = false;
+                }
             }
-        }
 
+        }
     }
 
     private void destroySelf() {

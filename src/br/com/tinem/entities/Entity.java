@@ -53,6 +53,10 @@ public class Entity {
 
     }
 
+    public double calculateDistance(int x1, int y1, int x2, int y2){
+        return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    }
+
     public void setMask(int maskX, int maskY, int mWidth, int mHeight) {
         this.setMaskX(maskX);
         this.setMaskY(maskY);
