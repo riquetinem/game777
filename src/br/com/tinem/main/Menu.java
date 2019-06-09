@@ -52,8 +52,15 @@ public class Menu {
 
     public void render(Graphics g) {
         // SETAR FUNDO DO MENU
-        g.setColor(Color.black);
-        g.fillRect(0, 0, (Main.WIDTH * Main.SCALE), (Main.HEIGHT * Main.SCALE));
+        if(!menuOn){
+            g.setColor(Color.black);
+            g.fillRect(0, 0, (Main.WIDTH * Main.SCALE), (Main.HEIGHT * Main.SCALE));
+        }else{
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setColor(new Color(0, 0, 0, 100));
+            g2.fillRect(0, 0, (Main.WIDTH * Main.SCALE), (Main.HEIGHT * Main.SCALE));
+
+        }
 
         // SETAR NOME DO GAME
         g.setColor(Color.GREEN);

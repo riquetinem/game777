@@ -39,7 +39,7 @@ public class Sound {
 
     }
 
-    public static Clips music = load("/Square_Hammer_8_Bit_Tribute_to_Ghost_-_8_Bit_Universe-0akvaxB9eyE.wav",1);
+    public static Clips music = load("/proerd.wav",1);
     public static Clips hurtEffect = load("/hurt.wav",1);
 
     private static Clips load(String name,int count) {

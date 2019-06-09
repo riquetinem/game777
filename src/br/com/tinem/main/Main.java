@@ -45,8 +45,13 @@ public class Main extends Canvas implements Runnable, KeyListener {
     public static Random rand;
 
     public static String gameState = "MENU";
+
     private boolean showMessageGameOver = true;
     private int framesGameOver = 0;
+
+    private boolean showMessageWin = true;
+    private int framesWin = 0;
+
     private boolean restartGame = false;
 
     public static boolean fecharJogo = false;
@@ -135,8 +140,11 @@ public class Main extends Canvas implements Runnable, KeyListener {
                     CUR_LEVEL = 1;
                 }
 
-                String newWorld = "level" + CUR_LEVEL + ".png";
-                World.restartGame(newWorld);
+                if (gameState != "WIN") {
+                    String newWorld = "level" + CUR_LEVEL + ".png";
+                    World.restartGame(newWorld);
+                }
+
             }
         } else if (gameState.equals("FAIL")) {
             this.framesGameOver++;
@@ -148,6 +156,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
                     this.showMessageGameOver = true;
                 }
             }
+
             if (restartGame) {
                 this.restartGame = false;
                 this.gameState = "NORMAL";
@@ -216,7 +225,7 @@ public class Main extends Canvas implements Runnable, KeyListener {
 
     @Override
     public void run() {
-        Sound.music.loop();
+        // Sound.music.loop();
 
         // pega o tempo do computador em nano segundo (mais preciso)
         long lastTime = System.nanoTime();
@@ -281,10 +290,11 @@ public class Main extends Canvas implements Runnable, KeyListener {
         }
 
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            this.restartGame = true;
 
             if (gameState.equals("MENU")) {
                 menu.enter = true;
+            }else if(gameState.equals("FAIL")){
+                this.restartGame = true;
             }
         }
 

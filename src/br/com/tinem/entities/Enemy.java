@@ -132,10 +132,10 @@ public class Enemy extends Entity {
                     // FAZ UM DANO CRITICO DE 2%
                     if (Main.rand.nextInt(100) < 2) {
                         life = life - ((BulletShoot) e).criticDamage;
-                        Sound.hurtEffect.play();
+                        // Sound.hurtEffect.play();
                     } else {
                         life = life - ((BulletShoot) e).damage;
-                        Sound.hurtEffect.play();
+                        // Sound.hurtEffect.play();
                     }
                     Main.bulletShoots.remove(i);
                     return;
